@@ -1,30 +1,32 @@
+import 'package:ap_pepepital_flutter_rdv/formulaire.dart';
 import 'package:ap_pepepital_flutter_rdv/rdv_page.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class Profil extends StatelessWidget {
+  const Profil({super.key});
 
   @override
   Widget build(BuildContext context) {
     final ButtonStyle style = ElevatedButton.styleFrom(
       enableFeedback: true,
-      fixedSize: const Size(250, 300),
+      fixedSize: const Size(255, 30),
     );
-    return Container(
-      margin: const EdgeInsets.all(20.0),
+    return Center(
+      heightFactor: double.infinity,
+      widthFactor: double.infinity,
       child: ElevatedButton.icon(
-        icon: const Icon(Icons.published_with_changes_sharp),
         style: style,
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return const RDV();
+                return const Formulaire();
               },
             ),
           );
         },
-        label: const Text("Voir vos RDVs"),
+        icon: const Icon(Icons.create),
+        label: const Text("S'inscrire/Se connecter"),
       ),
     );
   }
