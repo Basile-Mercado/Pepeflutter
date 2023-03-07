@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class RDV extends StatefulWidget {
   const RDV({super.key});
-
   @override
   State<RDV> createState() => _RDVState();
 }
@@ -14,10 +13,12 @@ class _RDVState extends State<RDV> {
       appBar: AppBar(
         title: const Text("Pepepital"),
       ),
-      body: Column(
-        children: [
-          Image.asset("img/pepe.jpg")
-        ],
+      body: Container(
+        width: double.infinity,
+        child: const Text(
+          "Listes des RDVs en cours",
+          style: TextStyle(fontSize: 20),
+        ),
       ),
     );
   }
