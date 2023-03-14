@@ -10,22 +10,29 @@ class HomePage extends StatelessWidget {
       enableFeedback: true,
       fixedSize: const Size(250, 300),
     );
-    return Container(
-      margin: const EdgeInsets.all(20.0),
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.published_with_changes_sharp),
-        style: style,
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                return const RDV();
-              },
-            ),
-          );
-        },
-        label: const Text("Voir vos RDVs"),
-      ),
+    return Row(
+      children: [
+        Container(
+          margin: const EdgeInsets.all(20.0),
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.published_with_changes_sharp),
+            style: style,
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) {
+                    return const RDV();
+                  },
+                ),
+              );
+            },
+            label: const Text("Voir vos RDVs"),
+          ),
+        ),
+        Container(
+          margin: const EdgeInsets.all(20.0),
+        )
+      ],
     );
   }
 }
