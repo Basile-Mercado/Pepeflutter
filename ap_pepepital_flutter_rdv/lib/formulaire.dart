@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart' show Key, kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Formulaire extends StatefulWidget {
   const Formulaire({Key? key}) : super(key: key);
@@ -11,28 +12,27 @@ class Formulaire extends StatefulWidget {
 }
 
 final _formKey = GlobalKey<FormState>();
+final TextEditingController emailController = TextEditingController();
+final TextEditingController passwordController = TextEditingController();
 
-void login(String email, password) async {
-  try {
-    Response response = await post(
-        Uri.parse("192.168.1.20:8000/api/login_check"),
-        body: {'email': email, 'password': password});
-
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body.toString());
-      if (kDebugMode) {
-        print(data['token']);
-      }
-      if (kDebugMode) {
-        'Connexion réussie';
-      }
-    } else {
-      'Connexion échouée';
-    }
-  } catch (e) {
-    if (kDebugMode) {
-      print(e.toString());
-    }
+Future<void> login() async {
+  final response = await http.post(
+    Uri.parse('http://192.168.1.20:8000/api/login_check'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'username': emailController.text,
+      'password': passwordController.text,
+    }),
+  );
+  if (response.statusCode == 200) {
+    final token = jsonDecode(response.body)['token'];
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+    // Navigate to the home page.
+  } else {
+    // Show an error message.
   }
 }
 
@@ -50,9 +50,6 @@ Widget build(BuildContext context) {
 }
 
 class _FormulaireState extends State<Formulaire> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,28 +65,36 @@ class _FormulaireState extends State<Formulaire> {
             TextFormField(
               controller: emailController,
               decoration: const InputDecoration(hintText: 'Email'),
+              validator: (value) {
+                if (value!.isNotEmpty) {
+                  return 'Veuillez saisir votre adresse mail';
+                }
+                return null;
+              },
             ),
             const SizedBox(
               height: 20,
             ),
             TextFormField(
               controller: passwordController,
-              decoration: const InputDecoration(hintText: 'Password'),
+              obscureText: true,
+              decoration: const InputDecoration(hintText: 'Mot de Passe'),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Veuillez entrer un mot de passe';
+                }
+                return null;
+              },
             ),
             const SizedBox(
               height: 40,
             ),
-            GestureDetector(
-              onTap: () {
-                login(emailController.text.toString(),
-                    passwordController.text.toString());
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(10)),
-                child: const Center(child: Text('Login')),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  login();
+                },
               ),
             )
           ],
