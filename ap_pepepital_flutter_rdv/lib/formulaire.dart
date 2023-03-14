@@ -1,35 +1,39 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart' show Key, kDebugMode;
-import 'package:flutter/material.dart'
-    show
-        Alignment,
-        AppBar,
-        BuildContext,
-        Colors,
-        Container,
-        EdgeInsets,
-        ElevatedButton,
-        FontWeight,
-        InputDecoration,
-        Key,
-        ListView,
-        MaterialApp,
-        OutlineInputBorder,
-        Padding,
-        Row,
-        Scaffold,
-        State,
-        StatefulWidget,
-        Text,
-        TextButton,
-        TextEditingController,
-        TextField,
-        TextStyle,
-        Widget;
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:http/http.dart';
 
 class Formulaire extends StatefulWidget {
   const Formulaire({Key? key}) : super(key: key);
   @override
   State<Formulaire> createState() => _FormulaireState();
+}
+
+final _formKey = GlobalKey<FormState>();
+
+void login(String email, password) async {
+  try {
+    Response response = await post(
+        Uri.parse("192.168.1.20:8000/api/login_check"),
+        body: {'email': email, 'password': password});
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body.toString());
+      if (kDebugMode) {
+        print(data['token']);
+      }
+      if (kDebugMode) {
+        'Connexion réussie';
+      }
+    } else {
+      'Connexion échouée';
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print(e.toString());
+    }
+  }
 }
 
 @override
@@ -46,98 +50,48 @@ Widget build(BuildContext context) {
 }
 
 class _FormulaireState extends State<Formulaire> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unnecessary_new
-    return new Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: const Text(''),
-        automaticallyImplyLeading: true,
+        title: const Text('Inscription/Connexion Pepepital'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: ListView(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(10),
-              child: const Text(
-                "Pepepital",
-                style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 30),
-              ),
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextFormField(
+              controller: emailController,
+              decoration: const InputDecoration(hintText: 'Email'),
             ),
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(10),
-              child: const Text(
-                'Se Connecter',
-                style: TextStyle(fontSize: 20),
-              ),
+            const SizedBox(
+              height: 20,
             ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Mail/Login',
-                ),
-              ),
+            TextFormField(
+              controller: passwordController,
+              decoration: const InputDecoration(hintText: 'Password'),
             ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: TextField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Mot de Passe',
-                ),
-              ),
+            const SizedBox(
+              height: 40,
             ),
-            TextButton(
-              onPressed: () {
-                //redirigé pour l'oubli de mot de passe
+            GestureDetector(
+              onTap: () {
+                login(emailController.text.toString(),
+                    passwordController.text.toString());
               },
-              child: const Text(
-                'Forgot Password',
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(10)),
+                child: const Center(child: Text('Login')),
               ),
-            ),
-            Container(
-              height: 50,
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ElevatedButton(
-                child: const Text('Login'),
-                onPressed: () {
-                  if (kDebugMode) {
-                    print(nameController.text);
-                  }
-                  if (kDebugMode) {
-                    print(passwordController.text);
-                  }
-                },
-              ),
-            ),
-            Row(
-              children: <Widget>[
-                const Text('Vous n\'avez pas de compte ?'),
-                TextButton(
-                  child: const Text(
-                    'S\'inscrire',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  onPressed: () {
-                    //rediriger sur creation de compte
-                  },
-                )
-              ],
-            ),
+            )
           ],
         ),
       ),
