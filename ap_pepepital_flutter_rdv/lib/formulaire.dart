@@ -90,11 +90,12 @@ class _FormulaireState extends State<Formulaire> {
               height: 40,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton.icon(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: ElevatedButton(
                 onPressed: () {
                   login();
                 },
+                child: const Text("Se connecter")
               ),
             )
           ],
