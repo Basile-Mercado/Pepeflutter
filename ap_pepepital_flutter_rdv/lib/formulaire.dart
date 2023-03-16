@@ -1,7 +1,6 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show Key, kDebugMode;
+import 'package:ap_pepepital_flutter_rdv/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,27 +13,8 @@ class Formulaire extends StatefulWidget {
 final _formKey = GlobalKey<FormState>();
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
-
-Future<void> login() async {
-  final response = await http.post(
-    Uri.parse('http://192.168.1.20:8000/api/login_check'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'username': emailController.text,
-      'password': passwordController.text,
-    }),
-  );
-  if (response.statusCode == 200) {
-    final token = jsonDecode(response.body)['token'];
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
-    // Navigate to the home page.
-  } else {
-    // Show an error message.
-  }
-}
+Map<String, dynamic> user = new Map();
+bool recupLogin = false;
 
 @override
 Widget build(BuildContext context) {
@@ -50,6 +30,25 @@ Widget build(BuildContext context) {
 }
 
 class _FormulaireState extends State<Formulaire> {
+  // Fonction pour la connexion et récupération du JWT Token
+  Future<void> login(String email, String password) async {
+    final response = await http.post(
+      Uri.parse('http://192.168.1.20:8000/api/login_check'),
+    );
+    if (response.statusCode == 200) {
+      final token = jsonDecode(response.body)['token'];
+      final prefs = await SharedPreferences.getInstance();
+      final info = token.values.toString();
+      await prefs.setString('token', token);
+      recupLogin = true;
+      setState(() {
+        info;
+      });
+    } else {
+      "Erreur de connexion";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +65,7 @@ class _FormulaireState extends State<Formulaire> {
               controller: emailController,
               decoration: const InputDecoration(hintText: 'Email'),
               validator: (value) {
-                if (value!.isNotEmpty) {
+                if (value?.isEmpty == null || !value!.contains('@')) {
                   return 'Veuillez saisir votre adresse mail';
                 }
                 return null;
@@ -80,7 +79,7 @@ class _FormulaireState extends State<Formulaire> {
               obscureText: true,
               decoration: const InputDecoration(hintText: 'Mot de Passe'),
               validator: (value) {
-                if (value!.isEmpty) {
+                if (value?.isEmpty == null || value!.length < 7) {
                   return 'Veuillez entrer un mot de passe';
                 }
                 return null;
@@ -90,11 +89,22 @@ class _FormulaireState extends State<Formulaire> {
               height: 40,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton.icon(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: ElevatedButton(
                 onPressed: () {
-                  login();
+                  if (_formKey.currentState != null &&
+                      _formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Processing Data'),
+                      ),
+                    );
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const HomePage()),
+                    );
+                  }
                 },
+                child: const Text("Se connecter"),
               ),
             )
           ],
