@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Pepepital RDV',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primaryColor: Colors.blue[900]),
       home: const Root(),
@@ -39,6 +40,7 @@ class _RootState extends State<Root> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text('Pepepital RDV'),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.info_outline))
         ],
