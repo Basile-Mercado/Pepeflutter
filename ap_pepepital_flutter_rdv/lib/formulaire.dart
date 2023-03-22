@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class Formulaire extends StatefulWidget {
   const Formulaire({Key? key}) : super(key: key);
@@ -50,6 +51,7 @@ class _FormulaireState extends State<Formulaire> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
         recupLogin = true;
+        await SessionManager().set('token', token);
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context) {
