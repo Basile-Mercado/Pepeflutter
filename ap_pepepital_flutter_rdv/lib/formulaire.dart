@@ -1,13 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
-import 'package:ap_pepepital_flutter_rdv/home_page.dart';
 import 'package:ap_pepepital_flutter_rdv/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
-import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class Formulaire extends StatefulWidget {
   const Formulaire({Key? key}) : super(key: key);
@@ -20,7 +18,7 @@ class _FormulaireState extends State<Formulaire> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool recupLogin = false;
-  String error = "oijkç_k";
+  String error = "";
 
   // Fonction pour la connexion et récupération du JWT Token
   Future<void> login(String email, String password) async {
@@ -47,8 +45,6 @@ class _FormulaireState extends State<Formulaire> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
         recupLogin = true;
-        await SessionManager().set('token', token);
-
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context) {
@@ -75,12 +71,14 @@ class _FormulaireState extends State<Formulaire> {
         title: const Text('Inscription/Connexion Pepepital'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(40.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextFormField(
+              maxLength: 30,
+              autocorrect: true,
               controller: emailController,
               decoration: const InputDecoration(hintText: 'Email'),
             ),
@@ -97,7 +95,7 @@ class _FormulaireState extends State<Formulaire> {
               height: 40,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: ElevatedButton(
                 onPressed: () {
                   login(emailController.text, passwordController.text);
