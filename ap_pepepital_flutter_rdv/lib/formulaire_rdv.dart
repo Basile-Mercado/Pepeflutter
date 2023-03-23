@@ -15,17 +15,14 @@ class _FormulaireRdvState extends State<FormulaireRdv> {
         title: const Text("Prendre rendez-vous"),
       ),
       body: SizedBox(
-        width: double.infinity,
-        child: Column(
-          children: <Widget>[
-            InputDatePickerFormField(
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 365)
-              )
-            )
-          ],
-        )
-      ),
+          width: double.infinity,
+          child: Column(
+            children: <Widget>[
+              InputDatePickerFormField(
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(const Duration(days: 365)))
+            ],
+          )),
     );
   }
 }

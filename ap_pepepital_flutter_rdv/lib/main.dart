@@ -1,7 +1,6 @@
 import 'package:ap_pepepital_flutter_rdv/home_page.dart';
 import 'package:ap_pepepital_flutter_rdv/page_profil.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());

@@ -29,8 +29,9 @@ class HomePage extends StatelessWidget {
             },
             label: const Text("Voir vos RDVs"),
           ),
-        ),Container(
-          margin: const EdgeInsets.all(20.0),
+        ),
+        Container(
+          margin: const EdgeInsets.all(10.0),
           child: ElevatedButton.icon(
             icon: const Icon(Icons.add_circle_outline),
             style: style,
