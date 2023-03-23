@@ -15,9 +15,9 @@ class _RDVState extends State<RDV> {
       appBar: AppBar(
         title: const Text("Pepepital"),
       ),
-      body: Container(
+      body: const SizedBox(
         width: double.infinity,
-        child: const Text(
+        child: Text(
           "Listes des RDVs en cours",
           style: TextStyle(fontSize: 20),
         ),
