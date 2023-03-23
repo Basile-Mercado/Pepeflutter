@@ -1,31 +1,57 @@
 import 'package:flutter/material.dart';
-import 'dart:convert' as convert;
 
-class FormulaireRdv extends StatefulWidget {
+
+const List<String> list = <String>['Medecin 1', 'Medecin 2', 'Medecin 3', 'Medecin 4'];
+
+class FormulaireRdv extends StatelessWidget {
   const FormulaireRdv({super.key});
-  @override
-  State<FormulaireRdv> createState() => _FormulaireRdvState();
-}
 
-class _FormulaireRdvState extends State<FormulaireRdv> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Prendre rendez-vous"),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Prendre rendez-vous')),
+        body: const Center(
+          child: DropdownButtonExample(),
+        ),
       ),
-      body: SizedBox(
-        width: double.infinity,
-        child: Column(
-          children: <Widget>[
-            InputDatePickerFormField(
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 365)
-              )
-            )
-          ],
-        )
+    );
+  }
+}
+
+class DropdownButtonExample extends StatefulWidget {
+  const DropdownButtonExample({super.key});
+
+  @override
+  State<DropdownButtonExample> createState() => _FormulaireRdvState();
+}
+
+class _FormulaireRdvState extends State<DropdownButtonExample> {
+  String dropdownValue = list.first;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      icon: const Icon(Icons.arrow_downward),
+      elevation: 16,
+      style: const TextStyle(color: Colors.deepPurple),
+      underline: Container(
+        height: 2,
+        color: Colors.deepPurpleAccent,
       ),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+        });
+      },
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
     );
   }
 }
