@@ -31,27 +31,21 @@ class _FormulaireRdvState extends State<DropdownButtonExample> {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: dropdownValue,
-      icon: const Icon(Icons.arrow_downward),
-      elevation: 16,
-      style: const TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Prendre rendez-vous"),
       ),
-      onChanged: (String? value) {
-        // This is called when the user selects an item.
-        setState(() {
-          dropdownValue = value!;
-        });
-      },
-      items: list.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+      body: SizedBox(
+          width: double.infinity,
+          child: Column(
+            children: <Widget>[
+              InputDatePickerFormField(
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(const Duration(days: 365)))
+            ],
+          )),
+
     );
   }
 }
