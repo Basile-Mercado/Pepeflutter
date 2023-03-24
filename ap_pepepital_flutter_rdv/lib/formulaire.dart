@@ -67,9 +67,6 @@ class _FormulaireState extends State<Formulaire> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inscription/Connexion Pepepital'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(40.0),
         child: Column(
@@ -90,7 +87,7 @@ class _FormulaireState extends State<Formulaire> {
               obscureText: true,
               decoration: const InputDecoration(hintText: 'Mot de Passe'),
             ),
-            Text('$error'),
+            Text(error),
             const SizedBox(
               height: 40,
             ),
