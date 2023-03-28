@@ -90,7 +90,7 @@ class _FormulaireState extends State<Formulaire> {
               obscureText: true,
               decoration: const InputDecoration(hintText: 'Mot de Passe'),
             ),
-            Text('$error'),
+            Text(error),
             const SizedBox(
               height: 40,
             ),
