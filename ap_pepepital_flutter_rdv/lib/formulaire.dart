@@ -19,7 +19,6 @@ class _FormulaireState extends State<Formulaire> {
   final TextEditingController passwordController = TextEditingController();
   bool recupLogin = false;
   String error = "";
-
   // Fonction pour la connexion et récupération du JWT Token
   Future<void> login(String email, String password) async {
     final response = await http.post(
@@ -35,13 +34,15 @@ class _FormulaireState extends State<Formulaire> {
 
     if (response.statusCode == 200) {
       setState(() {
-        error = "test";
+        error = "";
       });
       final token = jsonDecode(response.body)['token'];
       final payload = token.split('.')[1];
       final String decoded = B64urlEncRfc7515.decodeUtf8(payload);
       final List roles = jsonDecode(decoded)["roles"];
-      if (roles.contains("ROLE_PATIENT")) {
+      if (roles.contains("ROLE_PATIENT") ||
+          roles.contains("ROLE_MEDECIN") ||
+          roles.contains("ROLE_ASSISTANT")) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
         recupLogin = true;
@@ -52,6 +53,7 @@ class _FormulaireState extends State<Formulaire> {
             },
           ),
         );
+        Navigator.of(context).removeRoute(ModalRoute.of(context) as Route);
       } else {
         setState(() {
           error = 'Erreur de connexion [Rôle]';
@@ -67,7 +69,8 @@ class _FormulaireState extends State<Formulaire> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(40.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

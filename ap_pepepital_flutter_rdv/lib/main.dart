@@ -51,6 +51,40 @@ class Root extends StatefulWidget {
 
 class _RootState extends State<Root> {
   int _currentPage = 0;
+  bool _isLoggedIn = false;
+  bool _hasRole = false;
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  Future<bool> _onWillPop() async {
+    return false;
+  }
+
+  Future<void> checkLoginStatus() async {
+    final token = await getToken();
+    final roles = await getRole();
+
+    setState(() {
+      _isLoggedIn = token != null;
+      _hasRole = roles.contains('ROLE_PATIENT');
+    });
+  }
+
+  Future<void> setRoute() async {
+    final roles = await getRole();
+    if (roles.contains('ROLE_PATIENT')) {
+      _hasRole = roles.contains('ROLE_PATIENT');
+    } else if (roles.contains('ROLE_MEDECIN')) {
+      _hasRole = roles.contains('ROLE_MEDECIn');
+    } else if (roles.contains('ROLE_ASSISTANT')) {
+      _hasRole = roles.contains('ROLE_ASSISTANT');
+    }
+  }
+
   void onTabTapped(int index) {
     setState(() {
       _currentPage = index;
@@ -62,17 +96,13 @@ class _RootState extends State<Root> {
     Widget body;
     switch (_currentPage) {
       case 0:
-        body = getRole().toString().contains('ROLE_PATIENT') &&
-                getToken().toString().isNotEmpty
-            ? const PatientHome()
-            : const SizedBox();
+        body = _isLoggedIn && _hasRole ? const PatientHome() : const HomePage();
         break;
       case 1:
-        body = getToken() == null ? const Formulaire() : const Profil();
+        body = _isLoggedIn ? const Profil() : const Formulaire();
         break;
       default:
-        body =
-            getToken().toString().isEmpty ? const HomePage() : const SizedBox();
+        body = _isLoggedIn ? const HomePage() : const Formulaire();
         break;
     }
     return Scaffold(
