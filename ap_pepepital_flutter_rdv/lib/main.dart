@@ -74,7 +74,7 @@ class _RootState extends State<Root> {
     });
   }
 
-  Future<void> setRoute() async {
+  /*Future<void> setRoute() async {
     final roles = await getRole();
     if (roles.contains('ROLE_PATIENT')) {
       _hasRole = roles.contains('ROLE_PATIENT');
@@ -83,7 +83,7 @@ class _RootState extends State<Root> {
     } else if (roles.contains('ROLE_ASSISTANT')) {
       _hasRole = roles.contains('ROLE_ASSISTANT');
     }
-  }
+  }*/
 
   void onTabTapped(int index) {
     setState(() {
