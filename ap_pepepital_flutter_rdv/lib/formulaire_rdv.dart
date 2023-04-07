@@ -40,7 +40,7 @@ class _FormulaireRdvState extends State<DropdownButtonExample> {
   @override
   Widget build(BuildContext context) {
     getMedecins();
-    String dropdownValue = medecins[];
+    String dropdownValue = medecins.first;
     return DropdownButton<String>(
       value: dropdownValue,
       icon: const Icon(Icons.arrow_downward),
