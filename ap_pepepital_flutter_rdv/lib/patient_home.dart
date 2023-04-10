@@ -1,7 +1,6 @@
 import 'package:ap_pepepital_flutter_rdv/rdv_page.dart';
+import 'package:ap_pepepital_flutter_rdv/formulaire_rdv.dart';
 import 'package:flutter/material.dart';
-
-import 'formulaire_rdv.dart';
 
 class PatientHome extends StatelessWidget {
   const PatientHome({super.key});
@@ -10,12 +9,13 @@ class PatientHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final ButtonStyle style = ElevatedButton.styleFrom(
       enableFeedback: true,
-      fixedSize: const Size(250, 300),
+      fixedSize: const Size(300, 200),
     );
-    return Row(
+    return Stack(
       children: [
         Container(
-          margin: const EdgeInsets.all(20.0),
+          alignment: Alignment.centerLeft,
+          margin: const EdgeInsets.all(10.0),
           child: ElevatedButton.icon(
             icon: const Icon(Icons.published_with_changes_sharp),
             style: style,
@@ -32,7 +32,8 @@ class PatientHome extends StatelessWidget {
           ),
         ),
         Container(
-          margin: const EdgeInsets.all(10.0),
+          alignment: Alignment.centerRight,
+          margin: const EdgeInsets.all(20.0),
           child: ElevatedButton.icon(
             icon: const Icon(Icons.add_circle_outline),
             style: style,

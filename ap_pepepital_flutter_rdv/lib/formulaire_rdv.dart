@@ -8,13 +8,11 @@ class FormulaireRdv extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Prendre rendez-vous')),
-        body: const Center(
+    return const Scaffold(        
+        body:  Center(
           child: DropdownButtonExample(),
         ),
-      ),
+      
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ap_pepepital_flutter_rdv/home_page.dart';
 import 'package:ap_pepepital_flutter_rdv/page_profil.dart';
@@ -9,7 +10,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'formulaire.dart';
 
+ class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
+
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -18,6 +28,8 @@ Future<String?> getToken() async {
   final jwt = prefs.getString('token');
   return jwt;
 }
+
+
 
 Future<List> getRole() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -37,7 +49,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pepepital RDV',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primaryColor: Colors.blue[900]),
+      theme: ThemeData(useMaterial3: true,
+        primaryColor: Colors.blue[900]),
       home: const Root(),
     );
   }
@@ -58,10 +71,6 @@ class _RootState extends State<Root> {
   void initState() {
     super.initState();
     checkLoginStatus();
-  }
-
-  Future<bool> _onWillPop() async {
-    return false;
   }
 
   Future<void> checkLoginStatus() async {
