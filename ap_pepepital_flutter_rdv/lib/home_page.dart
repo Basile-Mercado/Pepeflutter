@@ -10,9 +10,9 @@ class HomePage extends StatelessWidget {
       enableFeedback: true,
       fixedSize: const Size(250, 300),
     );
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
+      children: const <Widget>[
         Text('Bienvenue !'),
         Text(''),
       ],
