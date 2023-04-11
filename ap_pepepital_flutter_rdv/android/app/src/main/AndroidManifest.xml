@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ap_pepepital_flutter_rdv">
+   <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="ap_pepepital_flutter_rdv"
+        android:label="Pepepital"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
