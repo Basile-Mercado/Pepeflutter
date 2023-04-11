@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:ap_pepepital_flutter_rdv/main.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 
@@ -14,15 +16,21 @@ class Formulaire extends StatefulWidget {
 }
 
 class _FormulaireState extends State<Formulaire> {
-  final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool recupLogin = false;
   String error = "";
   // Fonction pour la connexion et récupération du JWT Token
   Future<void> login(String email, String password) async {
-    final response = await http.post(
-      Uri.parse('http://192.168.1.20:8000/api/login_check'),
+    final ioc = HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    final http = IOClient(ioc);
+    await dotenv.load(fileName: ".env");
+    String? apiUrl = dotenv.env['API_URL'];
+    http
+        .post(
+      Uri.parse('$apiUrl/api/login_check'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -30,40 +38,39 @@ class _FormulaireState extends State<Formulaire> {
         'username': emailController.text,
         'password': passwordController.text
       }),
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        error = "";
-      });
-      final token = jsonDecode(response.body)['token'];
-      final payload = token.split('.')[1];
-      final String decoded = B64urlEncRfc7515.decodeUtf8(payload);
-      final List roles = jsonDecode(decoded)["roles"];
-      if (roles.contains("ROLE_PATIENT") ||
-          roles.contains("ROLE_MEDECIN") ||
-          roles.contains("ROLE_ASSISTANT")) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', token);
-        recupLogin = true;
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) {
-              return const MyApp();
-            },
-          ),
-        );
-        Navigator.of(context).removeRoute(ModalRoute.of(context) as Route);
+    )
+        .then((response) async {
+      if (response.statusCode == 200) {
+        setState(() {
+          error = "";
+        });
+        final token = jsonDecode(response.body)['token'];
+        final payload = token.split('.')[1];
+        final String decoded = B64urlEncRfc7515.decodeUtf8(payload);
+        final List roles = jsonDecode(decoded)["roles"];
+        if (roles.contains("ROLE_PATIENT")) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', token);
+          recupLogin = true;
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return const MyApp();
+              },
+            ),
+          );
+          Navigator.of(context).removeRoute(ModalRoute.of(context) as Route);
+        } else {
+          setState(() {
+            error = 'Erreur de connexion [Rôle]';
+          });
+        }
       } else {
         setState(() {
-          error = 'Erreur de connexion [Rôle]';
+          error = response.statusCode.toString();
         });
       }
-    } else {
-      setState(() {
-        error = response.statusCode.toString();
-      });
-    }
+    });
   }
 
   @override
