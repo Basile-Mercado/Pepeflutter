@@ -8,13 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'formulaire.dart';
+import 'connexion.dart';
 
- class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -28,8 +29,6 @@ Future<String?> getToken() async {
   final jwt = prefs.getString('token');
   return jwt;
 }
-
-
 
 Future<List> getRole() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -49,8 +48,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pepepital RDV',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true,
-        primaryColor: Colors.blue[900]),
+      theme: ThemeData(useMaterial3: true, primaryColor: Colors.blue[900]),
       home: const Root(),
     );
   }
