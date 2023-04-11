@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'functions/apiRequest.dart';
 
 class RDV extends StatefulWidget {
   const RDV({super.key});
@@ -10,25 +8,9 @@ class RDV extends StatefulWidget {
   State<RDV> createState() => _RDVState();
 }
 
-Future<List<dynamic>> getRDV() async {
-  //final token = getToken().toString();
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final jwt = prefs.getString('token');
-  List<dynamic> lesRDV = [];
-  var response = await http.get(
-      Uri.parse('https://192.168.1.42:8000/api/r_d_vs'),
-      headers: <String, String>{
-        'Authorization': 'Bearer $jwt',
-      });
-  if (response.statusCode == 200) {
-    var rdv = await json.decode(response.body)['hydra:member'];
-    for (var values in rdv) {
-      lesRDV.add(values);
-    }
-    return lesRDV;
-  } else {
-    throw Exception('Erreur');
-  }
+Future<List> getRDV() async {
+  var rdv = await getLesRdvs();
+  return rdv;
 }
 
 class _RDVState extends State<RDV> {
@@ -57,9 +39,9 @@ class _RDVState extends State<RDV> {
                 final rdvItem = rdv[index];
                 return ListTile(
                   title: Text(
-                      '${rdvItem['date']}${rdvItem['duree']} minutes${rdvItem['medecin']}'),
+                      '${DateFormat('dd/MM/yyyy à hh:mm').format(DateTime.parse(rdvItem['date']))} ${rdvItem['medecin']}'),
                   leading: CircleAvatar(
-                    child: Text(rdvItem['initial'].toString()),
+                    child: Text(rdvItem['id'].toString()),
                   ),
                   onTap: () {},
                 );

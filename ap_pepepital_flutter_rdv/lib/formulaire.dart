@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:ap_pepepital_flutter_rdv/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
@@ -25,9 +26,11 @@ class _FormulaireState extends State<Formulaire> {
     ioc.badCertificateCallback =
         (X509Certificate cert, String host, int port) => true;
     final http = IOClient(ioc);
+    await dotenv.load(fileName: ".env");
+    String? apiUrl = dotenv.env['API_URL'];
     http
         .post(
-      Uri.parse('https://192.168.1.42:8000/api/login_check'),
+      Uri.parse('$apiUrl/api/login_check'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -45,9 +48,7 @@ class _FormulaireState extends State<Formulaire> {
         final payload = token.split('.')[1];
         final String decoded = B64urlEncRfc7515.decodeUtf8(payload);
         final List roles = jsonDecode(decoded)["roles"];
-        if (roles.contains("ROLE_PATIENT") ||
-            roles.contains("ROLE_MEDECIN") ||
-            roles.contains("ROLE_ASSISTANT")) {
+        if (roles.contains("ROLE_PATIENT")) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', token);
           recupLogin = true;
