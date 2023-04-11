@@ -46,3 +46,25 @@ getMedecinName(String urlMedecin) async {
     return convert.jsonDecode(response2.body)["login"];
   }
 }
+
+Future<void> addRdv(
+    int duree, DateTime date, int patient, int statut, int medecin) async {
+  await dotenv.load(fileName: ".env");
+  String? apiUrl = dotenv.env['API_URL'];
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString("token");
+
+  if (token != null) {
+    final response = await http.post(
+      Uri.parse('$apiUrl/api/r_d_vs'),
+      headers: {'Authorization': 'Bearer $token'},
+      body: {
+        'duree': duree.toString(),
+        'date': date.toString(),
+        'patient': patient.toString(),
+        'statut': statut.toString(),
+        'medecin': medecin.toString(),
+      },
+    );
+  }
+}
