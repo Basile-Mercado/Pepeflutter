@@ -45,9 +45,7 @@ class _FormulaireState extends State<Formulaire> {
         final payload = token.split('.')[1];
         final String decoded = B64urlEncRfc7515.decodeUtf8(payload);
         final List roles = jsonDecode(decoded)["roles"];
-        if (roles.contains("ROLE_PATIENT") ||
-            roles.contains("ROLE_MEDECIN") ||
-            roles.contains("ROLE_ASSISTANT")) {
+        if (roles.contains("ROLE_PATIENT")) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', token);
           recupLogin = true;
