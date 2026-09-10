@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:ap_pepepital_flutter_rdv/home_page.dart';
 import 'package:ap_pepepital_flutter_rdv/page_profil.dart';
 import 'package:ap_pepepital_flutter_rdv/patient_home.dart';
@@ -10,17 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'connexion.dart';
 
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
-}
-
 void main() {
-  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 

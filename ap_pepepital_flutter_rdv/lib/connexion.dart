@@ -1,11 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
-import 'dart:io';
 import 'package:ap_pepepital_flutter_rdv/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/io_client.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 
@@ -22,14 +21,9 @@ class _FormulaireState extends State<Formulaire> {
   String error = "";
   // Fonction pour la connexion et récupération du JWT Token
   Future<void> login(String email, String password) async {
-    final ioc = HttpClient();
-    ioc.badCertificateCallback =
-        (X509Certificate cert, String host, int port) => true;
-    final http = IOClient(ioc);
     await dotenv.load(fileName: ".env");
     String? apiUrl = dotenv.env['API_URL'];
-    http
-        .post(
+    http.post(
       Uri.parse('$apiUrl/api/login_check'),
       headers: {
         'Content-Type': 'application/json',
