@@ -34,13 +34,13 @@ getMedecinName(String urlMedecin) async {
 
   if (token != null) {
     final response = await http.get(
-      Uri.parse('$apiUrl$urlMedecin'),
+      resolveApiReference(apiUrl ?? "", urlMedecin),
       headers: {'Authorization': 'Bearer $token'},
     );
     var medecin = convert.jsonDecode(response.body)["user"];
 
     final response2 = await http.get(
-      Uri.parse('$apiUrl$medecin'),
+      resolveApiReference(apiUrl ?? "", medecin),
       headers: {'Authorization': 'Bearer $token'},
     );
     return convert.jsonDecode(response2.body)["login"];
@@ -67,4 +67,16 @@ Future<void> addRdv(
       },
     );
   }
+}
+
+// API Platform may return IRIs already containing the deployment prefix.
+Uri resolveApiReference(String base, String reference) {
+  final uri = Uri.parse(reference);
+  if (uri.hasScheme) return uri;
+  final prefix = Uri.parse(base).path.replaceFirst(RegExp(r'/$'), '');
+  if (prefix.isNotEmpty && reference.startsWith('$prefix/')) {
+    final baseUri = Uri.parse(base);
+    return baseUri.hasScheme ? baseUri.resolve(reference) : uri;
+  }
+  return Uri.parse('$base$reference');
 }

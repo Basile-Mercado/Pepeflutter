@@ -19,3 +19,20 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+
+# Migration: local configuration and private data
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite3
+*.db
+*.log
+*.bak
+*.backup
+backups/
